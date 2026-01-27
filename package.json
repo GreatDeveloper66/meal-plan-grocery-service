@@ -2,7 +2,7 @@
   "name": "meal-plan-grocery-service",
   "version": "1.0.0",
   "main": "index.js",
-    "scripts": {
+  "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
@@ -15,6 +15,7 @@
     "typescript": "^5.9.3"
   },
   "dependencies": {
-    "@vercel/node": "^5.5.27"
+    "@vercel/node": "^5.5.27",
+    "dotenv": "^17.2.3"
   }
 }

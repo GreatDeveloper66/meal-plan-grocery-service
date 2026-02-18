@@ -5,7 +5,7 @@ export default async function handler(
     req: VercelRequest,
     res: VercelResponse
 ) {
-    const {lat, lng} = req.query;
+    const { lat, lng } = req.query;
     if (!lat || !lng) {
         return res.status(400).json({error: "Missing lat or lng query parameters"});
     }

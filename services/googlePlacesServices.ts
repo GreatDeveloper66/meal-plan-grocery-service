@@ -1,6 +1,35 @@
 import fetch from 'node-fetch';
+import { findNearestPlaceFromLatLongData } from './findNearestPlace';
 
 const GOOGLE_MAPS_API_KEY = process.env.MEAL_PLAN_GOOGLE_MAPS_API_KEY;
+
+type Coordinates = {
+    placeId?: string;
+    lat: number;
+    lng: number;
+}
+
+type CoordinateWithDistance = Coordinates & {
+    distance: number;
+}
+
+type ArrayOfCoordinates = Coordinates[];
+type ArrayOfCoordinatesWithDistance = CoordinateWithDistance[];
+
+//helper functions to call Google Places API
+const determineNearestPlaceIdFromResponse = (currentLocation: Coordinates, data: any) => {
+    if (data.results && data.results.length > 0) {
+        //extract place IDs and coordinates
+        const places = data.results.map((place: any) => ({
+            placeId: place.place_id,
+            lat: place.geometry.location.lat,
+            lng: place.geometry.location.lng
+        }));
+        return places[0].placeId; //return the first place ID as the nearest
+    } else {
+        throw new Error("No places found in the response");
+    }
+};
 
 export const findNearestWalmartPlaceIdFromLatLng = async (req: any, res: any) => {
     const { lat, lng } = req.params;
@@ -103,3 +132,5 @@ export const getPlaceDetails = async (req: any, res: any) => {
 //     const data = await response.json();
 //     return data;
 // }
+//https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=39.07634437145625,$-89.45285770359565&radius=100000&type=store&keyword=walmart&key=AIzaSyBssaIIgeemUU5qUjxC67_fkl8NZQlsZWY
+//39.07634437145625, -89.45285770359565

@@ -40,3 +40,4 @@ pnpm-lock.yaml
 .docz/dist
 /node_modules/
 /.turbo/
+copilot-*

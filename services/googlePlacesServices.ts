@@ -1,5 +1,5 @@
 import fetch from 'node-fetch';
-import { findNearestPlaceFromLatLongData } from './findNearestPlace';
+import { findNearestPlaceFromLatLongData } from './findNearestPlaceFromLatLongData';
 
 const GOOGLE_MAPS_API_KEY = process.env.MEAL_PLAN_GOOGLE_MAPS_API_KEY;
 

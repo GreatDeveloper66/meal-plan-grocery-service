@@ -1,4 +1,4 @@
-[
+export const foodPrices = [
   {
     "food": "Eggs",
     "standard_name": "egg",

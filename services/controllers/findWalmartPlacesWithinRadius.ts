@@ -1,14 +1,9 @@
 //helper service to find Walmart places within a certain radius of a given location using Google Places API
 import dotenv from 'dotenv';
 dotenv.config();
+import { Coordinates } from "../helpers/Coordinates";
 
 const GOOGLE_MAPS_API_KEY = process.env.GOOGLE_MAPS_API_KEY || '';
-
-type Coordinates = {
-    placeId?: string;
-    lat: number;
-    lng: number;
-}
 
 /**
  * Finds Walmart store locations within a specified radius of a given coordinate.

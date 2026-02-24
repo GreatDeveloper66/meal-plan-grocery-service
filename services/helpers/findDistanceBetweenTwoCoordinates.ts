@@ -1,9 +1,4 @@
-//helper service to find distance between two coordinates
-type Coordinates = {
-    placeId?: string;
-    lat: number;
-    lng: number;
-}
+import { Coordinates } from "./Coordinates";
 
 /**
  * Calculates the Euclidean distance between two geographic coordinates.

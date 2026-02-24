@@ -1,17 +1,6 @@
 import { findDistanceBetweenTwoCoordinates } from "./findDistanceBetweenTwoCoordinates";
+import { ArrayOfCoordinates, ArrayOfCoordinatesWithDistance, Coordinates } from "./Coordinates";
 
-type Coordinates = {
-    placeId?: string;
-    lat: number;
-    lng: number;
-}
-
-type CoordinateWithDistance = Coordinates & {
-    distance: number;
-}
-
-type ArrayOfCoordinates = Coordinates[];
-type ArrayOfCoordinatesWithDistance = CoordinateWithDistance[];
 //helper function that determines nearest coordinates in an array of
 // coordinates based on distance from current location
 /**

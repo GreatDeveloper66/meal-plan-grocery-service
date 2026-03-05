@@ -1,7 +1,7 @@
 export type Coordinates = {
     placeId?: string;
-    lat: number;
-    lng: number;
+    latitude: number;
+    longitude: number;
 };
 
 export type CoordinateWithDistance = Coordinates & {

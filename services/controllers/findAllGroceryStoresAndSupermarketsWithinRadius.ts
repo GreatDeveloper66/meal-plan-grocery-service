@@ -26,7 +26,7 @@ export const findAllGroceryStoresAndSupermarketsWithinRadius = async (radius: nu
             "circle": {
                 "center": {
                     "latitude": currentLocation.latitude,
-                    "longitude": currentLocation.lng
+                    "longitude": currentLocation.longitude
                 },
                 "radius": radius
             }

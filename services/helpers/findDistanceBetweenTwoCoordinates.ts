@@ -7,6 +7,6 @@ import { Coordinates } from "./Coordinates";
  * @returns The distance between the two coordinates as a number.
  */
 export const findDistanceBetweenTwoCoordinates = (coordA: Coordinates, coordB: Coordinates): number => {
-    return Math.sqrt((coordA.lat - coordB.lat) ** 2 + (coordA.lng - coordB.lng) ** 2);
+    return Math.sqrt((coordA.latitude - coordB.latitude) ** 2 + (coordA.longitude - coordB.longitude) ** 2);
 }
 

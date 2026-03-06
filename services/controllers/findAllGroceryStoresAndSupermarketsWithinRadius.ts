@@ -8,7 +8,7 @@ const GOOGLE_PLACES_API_URL = 'https://maps.googleapis.com/maps/api/place/findpl
 const headers = {
     'Content-Type': 'application/json',
     'X-Goog-Api-Key': GOOGLE_MAPS_API_KEY,
-    'X-Goog-FieldMask': 'places.id,places.displayName,places.location,places.types'
+    // 'X-Goog-FieldMask': 'places.id,places.displayName,places.location,places.types'
 }
 
 //Function Inputs: radius, current location in latitude and longitude

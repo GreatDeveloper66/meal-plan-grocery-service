@@ -3,7 +3,7 @@ dotenv.config();
 import { Coordinates } from "../helpers/Coordinates";
 
 const GOOGLE_MAPS_API_KEY = process.env.GOOGLE_MAPS_API_KEY || '';
-const GOOGLE_PLACES_API_URL = 'https://maps.googleapis.com/maps/api/place/findplacefromtext/json';
+const GOOGLE_PLACES_API_URL = 'https://places.googleapis.com/v1/places:searchText';
 
 const headers = {
     'Content-Type': 'application/json',
@@ -19,18 +19,22 @@ export const findAllGroceryStoresAndSupermarketsWithinRadius = async (radius: nu
     // Placeholder for the actual implementation
     // This function would typically call an external API (like Google Places API) to fetch the data
     // For demonstration purposes, we will return a mock list of grocery stores and supermarkets
+    // const body = {
+    //     "input": "grocery store supermarket",
+    //     "maxResults": 20,
+    //     "locationRestriction": {
+    //         "circle": {
+    //             "center": {
+    //                 "latitude": currentLocation.latitude,
+    //                 "longitude": currentLocation.longitude
+    //             },
+    //             "radius": radius
+    //         }
+    //     }
+    // }
+
     const body = {
-        "includedTypes": ["supermarket", "grocery_store"],
-        "maxResultCount": 20,
-        "locationRestriction": {
-            "circle": {
-                "center": {
-                    "latitude": currentLocation.latitude,
-                    "longitude": currentLocation.longitude
-                },
-                "radius": radius
-            }
-        }
+        "textQuery": "Grocery Store"
     }
 
     try {

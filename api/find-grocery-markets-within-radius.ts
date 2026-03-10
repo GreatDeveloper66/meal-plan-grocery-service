@@ -3,24 +3,24 @@ import { findAllGroceryStoresAndSupermarketsWithinRadius } from "../services/con
 
 
 export default async function handler(
-    req: VercelRequest,
-    res: VercelResponse
+  req: VercelRequest,
+  res: VercelResponse
 ) {
-    const { latitude, longitude, radius } = req.query;
-    // Validate query parameters
-    if (!latitude || !longitude || !radius) {
-        return res.status(400).json({ error: "Missing required query parameters: latitude, longitude, radius" });
+    if (req.method !== "POST") {
+        res.status(405).json({ status: 405, statusText: "Must be Method Post", results: [] });
+        return;
     }
-    if (parseInt(radius as string) > 50000) {
-        return res.status(400).json({ error: "Radius must be less than or equal to 50,000 meters" });
+
+    const { radius, currentLocation } = req.body;
+    if (typeof radius !== "number" || !currentLocation || typeof currentLocation.latitude !== "number" || typeof currentLocation.longitude !== "number") {
+        res.status(400).json({ status: 400, statusText: "Invalid request body", results: [] });
+        return;
     }
-    try {
-        const groceryStoresAndSupermarkets = await findAllGroceryStoresAndSupermarketsWithinRadius(parseInt(radius as string), { latitude: parseFloat(latitude as string), longitude: parseFloat(longitude as string) });
-        res.status(200).json({ status: "ok", places: groceryStoresAndSupermarkets });
-    } catch (error) {
-        const responseStatus = res.statusCode;
-        const errorMessage = error instanceof Error ? error.message : "Unknown error";
-        console.error("Error in handler:", { status: responseStatus, error: errorMessage });
-        res.status(responseStatus).json({ error: "Failed to find grocery stores and supermarkets within radius", statusCode: responseStatus, details: errorMessage });
-    }
+
+    const result = await findAllGroceryStoresAndSupermarketsWithinRadius(radius, currentLocation);
+    res.status(result.status).json({
+        status: result.status,
+        statusText: result.statusText,
+        places: result.places
+    });
 }

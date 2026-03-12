@@ -1,6 +1,6 @@
 import { VercelRequest, VercelResponse } from "@vercel/node";
 import { findAllGroceryStoresAndSupermarketsWithinRadius } from "../services/controllers/findAllGroceryStoresAndSupermarketsWithinRadius";
-
+import { Coordinates } from "../services/helpers/Coordinates";
 
 export default async function handler(
     req: VercelRequest,
@@ -34,7 +34,7 @@ export default async function handler(
     }
 
     try {
-        const result = await findAllGroceryStoresAndSupermarketsWithinRadius(radius, currentLocation);
+        const result = await findAllGroceryStoresAndSupermarketsWithinRadius(radius, { latitude, longitude } as Coordinates);
         res.status(result.status).json({
             status: result.status,
             statusText: result.statusText,

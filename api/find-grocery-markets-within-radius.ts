@@ -17,14 +17,13 @@ export default async function handler(
         return;
     }
 
-    
 
     if (radius <= 0) {
         res.status(400).json({ status: 400, statusText: "Radius must be greater than 0", results: [] });
         return;
     }
 
-    if (currentLocation.latitude < -90 || currentLocation.latitude > 90 || currentLocation.longitude < -180 || currentLocation.longitude > 180) {
+    if (latitude < -90 || latitude > 90 || longitude < -180 || longitude > 180) {
         res.status(400).json({ status: 400, statusText: "Invalid latitude or longitude values", results: [] });
         return;
     }

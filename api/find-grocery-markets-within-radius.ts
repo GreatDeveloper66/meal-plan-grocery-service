@@ -12,10 +12,12 @@ export default async function handler(
     }
 
     const { radius, currentLocation } = req.body;
-    if (typeof radius !== "number" || !currentLocation || typeof currentLocation.latitude !== "number" || typeof currentLocation.longitude !== "number") {
-        res.status(400).json({ status: 400, statusText: "Invalid request body", results: [] });
+    if(typeof radius !== "number" || typeof currentLocation !== "object" || typeof currentLocation.latitude !== "number" || typeof currentLocation.longitude !== "number") {
+        res.status(400).json({ status: 400, statusText: "Invalid input data. Radius must be a number and currentLocation must be an object with latitude and longitude as numbers.", results: [] });
         return;
     }
+
+    
 
     if (radius <= 0) {
         res.status(400).json({ status: 400, statusText: "Radius must be greater than 0", results: [] });

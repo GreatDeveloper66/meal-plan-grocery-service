@@ -3,8 +3,8 @@ import { findAllGroceryStoresAndSupermarketsWithinRadius } from "../services/con
 
 
 export default async function handler(
-  req: VercelRequest,
-  res: VercelResponse
+    req: VercelRequest,
+    res: VercelResponse
 ) {
     if (req.method !== "POST") {
         res.status(405).json({ status: 405, statusText: "Must be Method Post", results: [] });
@@ -17,10 +17,29 @@ export default async function handler(
         return;
     }
 
-    const result = await findAllGroceryStoresAndSupermarketsWithinRadius(radius, currentLocation);
-    res.status(result.status).json({
-        status: result.status,
-        statusText: result.statusText,
-        places: result.places
-    });
+    if (radius <= 0) {
+        res.status(400).json({ status: 400, statusText: "Radius must be greater than 0", results: [] });
+        return;
+    }
+
+    if (currentLocation.latitude < -90 || currentLocation.latitude > 90 || currentLocation.longitude < -180 || currentLocation.longitude > 180) {
+        res.status(400).json({ status: 400, statusText: "Invalid latitude or longitude values", results: [] });
+        return;
+    }
+
+    if (radius > 50000) {
+        res.status(400).json({ status: 400, statusText: "Radius must be less than or equal to 50,000 meters", results: [] });
+        return;
+    }
+
+    try {
+        const result = await findAllGroceryStoresAndSupermarketsWithinRadius(radius, currentLocation);
+        res.status(result.status).json({
+            status: result.status,
+            statusText: result.statusText,
+            places: result.places
+        });
+    } catch (error) {
+        res.status(500).json({ status: 500, statusText: "Internal Server Error: call to findAllGroceryStoresAndSupermarketsWithinRadius failed ", results: [] });
+    }
 }

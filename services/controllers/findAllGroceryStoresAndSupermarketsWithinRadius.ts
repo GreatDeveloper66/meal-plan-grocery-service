@@ -36,7 +36,7 @@ export const findAllGroceryStoresAndSupermarketsWithinRadius = async (
         const headers = {
             "Content-Type": "application/json",
             "X-Goog-Api-Key": GOOGLE_MAPS_API_KEY,
-            "X-Goog-FieldMask": "places.id,places.displayName,places.location,places.types"
+            "X-Goog-FieldMask": "places.id,places.displayName,places.name,places.location,places.types,places.formattedAddress,places.businessStatus,places.regularOpeningHours,places.currentOpeningHours,places.rating,places.userRatingCount,places.photos,places.priceLevel,places.internationalPhoneNumber,places.websiteUri,places.coordinates" 
         };
 
         const body = {
@@ -97,13 +97,23 @@ export const findAllGroceryStoresAndSupermarketsWithinRadius = async (
             const places = data.places && data.places.length > 0
                 ? data.places.map((place: any) => ({
                     placeId: place.id,
-                    name: place.displayName?.text || place.name,
+                    name: place.name,
                     displayName: place.displayName,
                     latitude: place.location?.latitude,
                     longitude: place.location?.longitude,
-                    types: place.types
-                    // We'll add more fields once we confirm the basics work
-                  }))
+                    types: place.types,
+                    formattedAddress: place.formattedAddress,
+                    businessStatus: place.businessStatus,
+                    regularOpeningHours: place.regularOpeningHours, // Weekly hours
+                    currentOpeningHours: place.currentOpeningHours, // Current/realtime hours
+                    rating: place.rating,
+                    userRatingCount: place.userRatingCount,
+                    photos: place.photos, // Contains photo_reference for later retrieval
+                    priceLevel: place.priceLevel,
+                    phoneNumber: place.internationalPhoneNumber,
+                    website: place.websiteUri,
+                    coordinates: place.coordinates
+                }))
                 : [];
 
             return {

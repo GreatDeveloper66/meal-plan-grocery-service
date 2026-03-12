@@ -11,9 +11,9 @@ export default async function handler(
         return;
     }
 
-    const { radius, currentLocation } = req.body;
-    if(typeof radius !== "number" || typeof currentLocation !== "object" || typeof currentLocation.latitude !== "number" || typeof currentLocation.longitude !== "number") {
-        res.status(400).json({ status: 400, statusText: "Invalid input data. Radius must be a number and currentLocation must be an object with latitude and longitude as numbers.", results: [] });
+    const { radius, latitude, longitude } = req.body;
+    if(typeof radius !== "number" || typeof latitude !== "number" || typeof longitude !== "number") {
+        res.status(400).json({ status: 400, statusText: "Invalid input data. Radius, latitude, and longitude must be numbers.", results: [] });
         return;
     }
 

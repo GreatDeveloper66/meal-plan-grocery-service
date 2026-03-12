@@ -12,7 +12,7 @@ export default async function handler(
     }
 
     const { radius, latitude, longitude } = req.body;
-    if(typeof radius !== "number" || typeof latitude !== "number" || typeof longitude !== "number") {
+    if (typeof radius !== "number" || typeof latitude !== "number" || typeof longitude !== "number") {
         res.status(400).json({ status: 400, statusText: "Invalid input data. Radius, latitude, and longitude must be numbers.", results: [] });
         return;
     }
@@ -33,14 +33,11 @@ export default async function handler(
         return;
     }
 
-    try {
-        const result = await findAllGroceryStoresAndSupermarketsWithinRadius(radius, { latitude, longitude } as Coordinates);
-        res.status(result.status).json({
-            status: result.status,
-            statusText: result.statusText,
-            places: result.places
-        });
-    } catch (error) {
-        res.status(500).json({ status: 500, statusText: "Internal Server Error: call to findAllGroceryStoresAndSupermarketsWithinRadius failed ", results: [] });
-    }
+
+    const result = await findAllGroceryStoresAndSupermarketsWithinRadius(radius, { latitude, longitude } as Coordinates);
+    res.status(result.status).json({
+        status: result.status,
+        statusText: result.statusText,
+        places: result.places
+    });
 }

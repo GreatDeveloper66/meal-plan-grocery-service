@@ -2,7 +2,8 @@ import dotenv from 'dotenv';
 dotenv.config();
 import { Coordinates } from "../helpers/Coordinates";
 import { GooglePlacesPhotoService } from "../helpers/google-places-photos";
-
+import { findDistanceBetweenTwoCoordinates } from '../helpers/findDistanceBetweenTwoCoordinates';
+import { determineOpenOrClosedBasedOnCurrentTimeAndOperatingHours } from '../helpers/determineOpenorClosedBasedOnCurrentTimeAndOperatingHours';
 interface PlacesApiResponse {
     status: number;
     statusText: string;
@@ -108,6 +109,20 @@ export const findAllGroceryStoresAndSupermarketsWithinRadius = async (
                         attributions: photo.authorAttributions
                     })) || [];
 
+                    data.places.distanceFromCurrentLocation = findDistanceBetweenTwoCoordinates(
+                        currentLocation = { latitude: currentLocation.latitude, longitude: currentLocation.longitude },
+                        place.location ? { latitude: place.location.latitude, longitude: place.location.longitude } : { latitude: 0, longitude: 0 }
+                    );
+
+                    //for each place determine if it is currently open or closed and if open the hours left till closing time, if closed the hours until opening time
+                    data.places.openClosedStatus = determineOpenOrClosedBasedOnCurrentTimeAndOperatingHours(
+                        //get current date and time
+                        new Date(),
+                        //get operating hours of the place
+                        place.regularOpeningHours || []
+                    );
+
+
                     return {
                         placeId: place.id,
                         name: place.name,
@@ -126,6 +141,7 @@ export const findAllGroceryStoresAndSupermarketsWithinRadius = async (
                         priceLevel: place.priceLevel,
                         phoneNumber: place.internationalPhoneNumber || place.phoneNumber,
                         website: place.websiteUri,
+                        distanceFromCurrentLocation: data.places.distanceFromCurrentLocation
                     };
                 })
                 : [];

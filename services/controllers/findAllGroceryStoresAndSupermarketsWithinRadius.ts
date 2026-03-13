@@ -1,6 +1,7 @@
 import dotenv from 'dotenv';
 dotenv.config();
 import { Coordinates } from "../helpers/Coordinates";
+import { GooglePlacesPhotoService } from "../helpers/google-places-photos";
 
 interface PlacesApiResponse {
     status: number;
@@ -57,6 +58,8 @@ export const findAllGroceryStoresAndSupermarketsWithinRadius = async (
         log("Request headers:", headers);
         log("Request body:", JSON.stringify(body, null, 2));
 
+        const photoService = new GooglePlacesPhotoService();
+
         const response = await fetch(GOOGLE_PLACES_API_URL, {
             method: 'POST',
             headers: headers,
@@ -95,24 +98,36 @@ export const findAllGroceryStoresAndSupermarketsWithinRadius = async (
             log("Successfully parsed response", { placesFound: data.places?.length });
 
             const places = data.places && data.places.length > 0
-                ? data.places.map((place: any) => ({
-                    placeId: place.id,
-                    name: place.name,
-                    displayName: place.displayName,
-                    latitude: place.location?.latitude,
-                    longitude: place.location?.longitude,
-                    types: place.types,
-                    formattedAddress: place.formattedAddress,
-                    businessStatus: place.businessStatus,
-                    regularOpeningHours: place.regularOpeningHours, // Weekly hours
-                    currentOpeningHours: place.currentOpeningHours, // Current/realtime hours
-                    rating: place.rating,
-                    userRatingCount: place.userRatingCount,
-                    photos: place.photos, // Contains photo_reference for later retrieval
-                    priceLevel: place.priceLevel,
-                    phoneNumber: place.internationalPhoneNumber,
-                    website: place.websiteUri
-                }))
+                ? data.places.map((place: any) => {
+                    // Generate photo URLs for each photo
+                    const photoUrls = place.photos?.map((photo: any) => ({
+                        // The photo.name is already in the correct format[citation:2]
+                        url: photoService.getPhotoUrl(photo.name, 400), // 400px wide
+                        width: photo.widthPx,
+                        height: photo.heightPx,
+                        attributions: photo.authorAttributions
+                    })) || [];
+
+                    return {
+                        placeId: place.id,
+                        name: place.name,
+                        displayName: place.displayName,
+                        latitude: place.location?.latitude,
+                        longitude: place.location?.longitude,
+                        types: place.types,
+                        formattedAddress: place.formattedAddress,
+                        businessStatus: place.businessStatus,
+                        regularOpeningHours: place.regularOpeningHours,
+                        currentOpeningHours: place.currentOpeningHours,
+                        rating: place.rating,
+                        userRatingCount: place.userRatingCount,
+                        photos: place.photos, // Keep original photo metadata
+                        photoUrls: photoUrls, // Add generated URLs for easy access
+                        priceLevel: place.priceLevel,
+                        phoneNumber: place.internationalPhoneNumber || place.phoneNumber,
+                        website: place.websiteUri,
+                    };
+                })
                 : [];
 
             return {

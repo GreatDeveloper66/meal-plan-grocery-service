@@ -154,6 +154,7 @@ export const findAllGroceryStoresAndSupermarketsWithinRadius = async (
 
         } catch (parseError) {
             log("JSON Parse Error:", parseError);
+            log("Raw response body that failed to parse:", responseBodyText);
             return {
                 status: 500,
                 statusText: "Invalid JSON response from Google API",

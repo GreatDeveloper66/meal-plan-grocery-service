@@ -36,7 +36,7 @@ export const findAllGroceryStoresAndSupermarketsWithinRadius = async (
             "Accept": "application/json",
             "Content-Type": "application/json",
             "X-Goog-Api-Key": GOOGLE_MAPS_API_KEY,
-            "X-Goog-FieldMask": "places.id,places.displayName,places.name,places.location,places.types,places.formattedAddress,places.businessStatus,places.regularOpeningHours,places.currentOpeningHours,places.rating,places.userRatingCount,places.photos,places.priceLevel,places.internationalPhoneNumber,places.websiteUri,places.coordinates"
+            "X-Goog-FieldMask": "places.id,places.displayName,places.name,places.location,places.types,places.formattedAddress,places.businessStatus,places.regularOpeningHours,places.currentOpeningHours,places.rating,places.userRatingCount,places.photos,places.priceLevel,places.internationalPhoneNumber,places.websiteUri"
         };
 
         const body = {

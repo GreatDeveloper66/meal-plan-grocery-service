@@ -1,6 +1,8 @@
 import dotenv from 'dotenv';
 dotenv.config();
 import { Coordinates } from "../helpers/Coordinates";
+import { determineStoreHours } from '../helpers/hours-helper';
+
 
 interface PlacesApiResponse {
     status: number;
@@ -106,6 +108,15 @@ export const findAllGroceryStoresAndSupermarketsWithinRadius = async (
                 };
             }) || [];
 
+            // Determine open/closed status based on current time and operating hours
+            // Determine current store hours status
+            const currentTime = new Date();
+            const hoursStatus = determineStoreHours(
+                currentTime,
+                place.currentOpeningHours || place.regularOpeningHours
+            );
+
+
             return {
                 placeId: place.id,
                 name: place.displayName?.text || place.name,
@@ -126,6 +137,15 @@ export const findAllGroceryStoresAndSupermarketsWithinRadius = async (
                 priceLevel: place.priceLevel,
                 phoneNumber: place.internationalPhoneNumber,
                 website: place.websiteUri,
+                // Computed hours status
+                hoursStatus: {
+                    isOpen: hoursStatus.isOpen,
+                    message: hoursStatus.message,
+                    hoursUntilClose: hoursStatus.hoursUntilClose,
+                    hoursUntilOpen: hoursStatus.hoursUntilOpen,
+                    nextCloseTime: hoursStatus.nextCloseTime,
+                    nextOpenTime: hoursStatus.nextOpenTime
+                },
             };
         });
 

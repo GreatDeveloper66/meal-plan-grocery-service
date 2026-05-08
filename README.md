@@ -1,4 +1,4 @@
-# [Service Name]
+# Meal Plan Grocery Service
 
 > Part of the Meal Planning App — a full-stack, microservice-based application that generates personalized weekly meal plans and surfaces nearby grocery stores based on the user's nutritional profile.
 
@@ -6,7 +6,7 @@
 
 ## Overview
 
-[1–2 sentences describing what this specific service does and its role in the overall system. Example: "The User Authorization Service handles user registration, login, and JWT-based authentication. It is the identity foundation for the entire application — every other service depends on the token this service generates at login."]
+The Meal Plan Grocery Service calls google apis to find grocery stores in a radius from a given location. It responds to requests with information concerning each grocery store including hours, address and other data.
 
 ---
 
@@ -17,10 +17,9 @@
 | Runtime | Node.js |
 | Language | TypeScript |
 | Framework | Express |
-| Database | MongoDB |
 | Deployment | Vercel |
 | Auth | JSON Web Tokens (JWT) |
-| Other | [e.g. bcrypt, CORS, OpenAI SDK, Google Places API] |
+| API | Google Places API |
 
 ---
 
@@ -43,7 +42,7 @@ Backend for Frontend — BFF (Vercel)   ← Single entry point
 └───────────────────────────────────────────────┘
 ```
 
-**This service:** [Highlight where this service sits — e.g. "User Auth is the first service called at login. The JWT it generates is passed to all other services via the BFF."]
+**This service:** This service is called by front end after dashboard is rendered to provide user with a choice of grocery stores.
 
 ---
 
@@ -52,36 +51,43 @@ Backend for Frontend — BFF (Vercel)   ← Single entry point
 ### Public Routes
 
 | Method | Endpoint | Description |
-|---|---|---|
-| POST | `/api/[resource]/register` | Register a new user |
-| POST | `/api/[resource]/login` | Login and receive JWT |
-| POST | `/api/[resource]/logout` | Logout user |
-
-### Protected Routes
-> Requires a valid JWT token in the `Authorization: Bearer <token>` header.
-
-| Method | Endpoint | Description |
-|---|---|---|
-| GET | `/api/[resource]/profile` | Get current user data |
-| PUT | `/api/[resource]/profile` | Update user data |
-| DELETE | `/api/[resource]/[id]` | Delete record |
+|-----|--------------------|-----------------------|
+| GET | `/api/get-stores/` | Find stores in radius |
 
 ---
 
 ## Data Model
 
 ```typescript
-// [Model Name] — MongoDB Document
-{
-  _id: ObjectId,         // Auto-generated — used as shared userId across services
-  firstName: string,
-  lastName: string,
-  email: string,         // Unique
-  phone: string,
-  password: string,      // Hashed via bcrypt — never stored in plain text
-  createdAt: Date,
-  updatedAt: Date
-}
+
+                placeId: any
+                name: string
+                displayName: string
+                latitude: number
+                longitude: number
+                types: place
+                formattedAddress: string
+                businessStatus: string
+                regularOpeningHours: any
+                currentOpeningHours: any
+                rating: any
+                userRatingCount: any
+                // Include the processed photos with URLs
+                photos: photos
+                // Also include count of available photos
+                photoCount: number
+                priceLevel: any
+                phoneNumber: string
+                website: string
+                // Computed hours status
+                hoursStatus: {
+                    isOpen: boolean
+                    message: string
+                    hoursUntilClose: number
+                    hoursUntilOpen: number
+                    nextCloseTime: number
+                    nextOpenTime: any
+                }
 ```
 
 ---
@@ -107,7 +113,6 @@ NODE_ENV=       # development | production
 
 - Node.js v18+
 - npm or yarn
-- MongoDB instance (local or Atlas)
 
 ### Installation
 
@@ -127,19 +132,6 @@ cp .env.example .env
 
 # Start the development server
 npm run dev
-```
-
----
-
-## JWT Token Flow
-
-This service generates a JWT token at login containing the `userId` and an expiration time. That token is passed via the BFF to all downstream services, where it is decoded to identify the requesting user without requiring a direct call back to this service.
-
-```
-Login → JWT generated (userId + expiration)
-      → Token passed via BFF to downstream services
-      → Each service decodes token to retrieve userId
-      → userId used as shared key across all MongoDB databases
 ```
 
 ---
@@ -172,8 +164,6 @@ Ensure all environment variables are configured in the Vercel project dashboard 
 
 ## License
 
-[MIT / ISC / Your preferred license]
+[MIT]
 
 ---
-
-*Part of a multi-service meal planning application. See the [main project README or article series link] for full architecture documentation.*

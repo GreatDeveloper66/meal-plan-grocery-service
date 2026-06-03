@@ -1,169 +1,142 @@
-# Meal Plan Grocery Service
+# meal-plan-grocery-service
 
-> Part of the Meal Planning App — a full-stack, microservice-based application that generates personalized weekly meal plans and surfaces nearby grocery stores based on the user's nutritional profile.
+A microservice that discovers nearby grocery stores based on a user's location and search radius using the Google Places API. Part of the Meal Plan & Grocery Discovery application — a full-stack microservice architecture for personalized meal planning and local grocery store discovery.
 
 ---
 
 ## Overview
 
-The Meal Plan Grocery Service calls google apis to find grocery stores in a radius from a given location. It responds to requests with information concerning each grocery store including hours, address and other data.
+This service accepts a geographic coordinate and search radius, then queries the Google Places API to return a structured list of nearby grocery stores. Each result includes store details such as name, address, hours of operation, ratings, and contact information — giving users everything they need to plan a shopping trip around their generated meal plan.
 
 ---
 
 ## Tech Stack
 
-| Layer | Technology |
-|---|---|
-| Runtime | Node.js |
-| Language | TypeScript |
-| Framework | Express |
-| Deployment | Vercel |
-| Auth | JSON Web Tokens (JWT) |
-| API | Google Places API |
+- **Runtime:** Node.js
+- **Language:** TypeScript
+- **Framework:** Express
+- **External API:** Google Places API
 
 ---
 
-## Architecture Context
+## Features
 
-This service is one of six components in the meal planning application:
-
-```
-React / TypeScript Frontend (Render)
-        |
-        v
-Backend for Frontend — BFF (Vercel)   ← Single entry point
-        |
-        v
-┌───────────────────────────────────────────────┐
-│              Vercel Microservices              │
-│                                               │
-│  User Auth   Diet Profile   AI Meal Planner   │
-│  Meal Plan Storage   Grocery Locator          │
-└───────────────────────────────────────────────┘
-```
-
-**This service:** This service is called by front end after dashboard is rendered to provide user with a choice of grocery stores.
+- Finds grocery stores within a configurable radius from a given location
+- Returns rich store data including hours, address, ratings, and contact info
+- Real-time open/closed status per store
+- Structured weekly hours and next open time
 
 ---
 
 ## API Endpoints
 
-### Public Routes
-
 | Method | Endpoint | Description |
-|-----|--------------------|-----------------------|
-| GET | `/api/get-stores/` | Find stores in radius |
+|--------|----------|-------------|
+| POST | `/stores/nearby` | Find grocery stores near a given location and radius |
 
 ---
 
-## Data Model
+## Request Schema
 
 ```typescript
+{
+  location: {
+    latitude: number
+    longitude: number
+  }
+  radius: number  // in meters
+}
+```
 
-                placeId: any
-                name: string
-                displayName: string
-                latitude: number
-                longitude: number
-                types: place
-                formattedAddress: string
-                businessStatus: string
-                regularOpeningHours: any
-                currentOpeningHours: any
-                rating: any
-                userRatingCount: any
-                // Include the processed photos with URLs
-                photos: photos
-                // Also include count of available photos
-                photoCount: number
-                priceLevel: any
-                phoneNumber: string
-                website: string
-                // Computed hours status
-                hoursStatus: {
-                    isOpen: boolean
-                    message: string
-                    hoursUntilClose: number
-                    hoursUntilOpen: number
-                    nextCloseTime: number
-                    nextOpenTime: any
-                }
+## Response Schema
+
+```typescript
+{
+  stores: [
+    {
+      placeId: string
+      name: string
+      formattedAddress: string
+      phoneNumber: string
+      rating: number
+      userRatingCount: number
+      businessStatus: string
+      regularOpeningHours: {
+        openNow: boolean
+        weekdayDescriptions: string[]
+        nextOpenTime: string
+      }
+      hoursStatus: {
+        isOpen: boolean
+        message: string
+        hoursUntilOpen: number
+        nextOpenTime: string
+      }
+    }
+  ]
+}
 ```
 
 ---
 
 ## Environment Variables
 
-Create a `.env` file in the root of this service with the following variables:
+Create a `.env` file in the root of the project with the following variables:
 
-```bash
-PORT=           # Local development port
-MONGO_URI=      # MongoDB connection string
-JWT_SECRET=     # Secret key for signing JWT tokens
-NODE_ENV=       # development | production
+```env
+PORT=3005
+GOOGLE_PLACES_API_KEY=your_google_places_api_key
+JWT_SECRET=your_jwt_secret
 ```
-
-> ⚠️ Never commit your `.env` file. It is included in `.gitignore`.
 
 ---
 
 ## Getting Started
 
 ### Prerequisites
-
 - Node.js v18+
-- npm or yarn
+- Google Places API key with Places API enabled
 
 ### Installation
 
 ```bash
-# Clone the repository
-git clone https://github.com/GreatDeveloper66/meal-plan-grocery-service.git
-
-# Navigate into the project directory
+git clone https://github.com/yourusername/meal-plan-grocery-service.git
 cd meal-plan-grocery-service
-
-# Install dependencies
 npm install
+```
 
-# Create your environment file
-cp .env.example .env
-# Then fill in your values
+### Development
 
-# Start the development server
+```bash
 npm run dev
 ```
 
----
-
-## Related Services
-
-| Service | Repository | Description |
-|---|---|---|
-| BFF | https://github.com/GreatDeveloper66/meal-planner-backend-for-frontend | Routes and aggregates all frontend requests |
-| Diet Profile | https://github.com/GreatDeveloper66/meal-plan-diet-profile-service| Stores user nutritional profile |https://github.com/GreatDeveloper66/meal-plan-profile-service
-| AI Meal Planner | https://github.com/GreatDeveloper66/ai-meal-planner-backend | Generates meal plans and images via OpenAI |
-| Meal Plan Storage | https://github.com/GreatDeveloper66/meal-planner-user-meal-plan-service| Caches generated meal plans per user |
-| Grocery Locator | https://github.com/GreatDeveloper66/meal-plan-grocery-service | Returns nearby grocery stores via Google Places |
-| Frontend | https://github.com/GreatDeveloper66/meal-plan-frontend | React / TypeScript user interface |
-
----
-
-## Deployment
-
-This service is deployed to **Vercel**. Each service is deployed independently as a standalone Node.js serverless application.
+### Production
 
 ```bash
-# Deploy via Vercel CLI
-vercel --prod
+npm run build
+npm start
 ```
 
-Ensure all environment variables are configured in the Vercel project dashboard before deploying.
+---
+
+## Known Limitations
+
+- Store photo retrieval is currently in development
+- Results are limited to grocery store category types
 
 ---
 
-## License
+## Project Architecture
 
-[MIT]
+This service is one of six components in the Meal Plan & Grocery Discovery application:
 
----
+| Service | Responsibility |
+|---------|---------------|
+| user-auth-service | Authentication & JWT management |
+| meal-plan-diet-profile-service | Diet profile storage & management |
+| ai-meal-planner-backend | AI-powered meal plan generation |
+| meal-planner-user-meal-plan-service | User meal plan storage |
+| **meal-plan-grocery-service** | Grocery store discovery via Google API |
+| meal-plan-frontend | React frontend |
+| meal-planner-backend-for-frontend | BFF orchestration layer |

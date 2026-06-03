@@ -118,10 +118,10 @@ NODE_ENV=       # development | production
 
 ```bash
 # Clone the repository
-git clone https://github.com/[your-username]/[repo-name].git
+git clone https://github.com/GreatDeveloper66/meal-plan-grocery-service.git
 
 # Navigate into the project directory
-cd [repo-name]
+cd meal-plan-grocery-service
 
 # Install dependencies
 npm install
@@ -140,12 +140,12 @@ npm run dev
 
 | Service | Repository | Description |
 |---|---|---|
-| BFF | [link] | Routes and aggregates all frontend requests |
-| Diet Profile | [link] | Stores user nutritional profile |
-| AI Meal Planner | [link] | Generates meal plans and images via OpenAI |
-| Meal Plan Storage | [link] | Caches generated meal plans per user |
-| Grocery Locator | [link] | Returns nearby grocery stores via Google Places |
-| Frontend | [link] | React / TypeScript user interface |
+| BFF | https://github.com/GreatDeveloper66/meal-planner-backend-for-frontend | Routes and aggregates all frontend requests |
+| Diet Profile | https://github.com/GreatDeveloper66/meal-plan-diet-profile-service| Stores user nutritional profile |https://github.com/GreatDeveloper66/meal-plan-profile-service
+| AI Meal Planner | https://github.com/GreatDeveloper66/ai-meal-planner-backend | Generates meal plans and images via OpenAI |
+| Meal Plan Storage | https://github.com/GreatDeveloper66/meal-planner-user-meal-plan-service| Caches generated meal plans per user |
+| Grocery Locator | https://github.com/GreatDeveloper66/meal-plan-grocery-service | Returns nearby grocery stores via Google Places |
+| Frontend | https://github.com/GreatDeveloper66/meal-plan-frontend | React / TypeScript user interface |
 
 ---
 
